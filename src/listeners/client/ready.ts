@@ -1,6 +1,9 @@
 import { Listener } from 'discord-akairo'
+import { StevezBot } from '../../bot'
 
 export default class ReadyListener extends Listener {
+  client!: StevezBot
+
   constructor () {
     super('clientReady', {
       emitter: 'client',
@@ -10,6 +13,6 @@ export default class ReadyListener extends Listener {
   }
 
   exec () {
-    console.log(`Logado como: ${this.client.user!.tag}`)
+    this.client.logger.info(`Logado como: ${this.client.user!.tag}`)
   }
 }

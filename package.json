@@ -20,6 +20,7 @@
     "dev": "ts-node src"
   },
   "dependencies": {
+    "chalk": "^4.1.1",
     "discord-akairo": "^8.1.0",
     "discord.js": "^12.5.3",
     "ts-node": "^9.1.1"
