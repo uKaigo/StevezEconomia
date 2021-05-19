@@ -8,6 +8,7 @@ module.exports = {
       'module-resolver',
       {
         alias: {
+          '@/': './src',
           '@structures': './src/structures'
         }
       }

@@ -1,5 +1,5 @@
 import { Listener } from 'discord-akairo'
-import { StevezBot } from '../../bot'
+import { StevezBot } from '@/bot'
 
 export default class ReadyListener extends Listener {
   client!: StevezBot
