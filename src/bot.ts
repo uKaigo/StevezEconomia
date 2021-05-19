@@ -34,6 +34,10 @@ export class StevezBot extends AkairoClient {
     })
 
     this.commandHandler.useListenerHandler(this.listenerHandler)
+    this.listenerHandler.setEmitters({
+      commandHandler: this.commandHandler,
+      listenerHandler: this.listenerHandler
+    })
 
     this.logger = new Logger()
 
