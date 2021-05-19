@@ -15,7 +15,7 @@ export default class CoinflipCommand extends Command {
           type: ['cara', 'coroa'],
           prompt: {
             start: 'Você deseja ser `cara` ou `coroa`?',
-            retry: 'Escolha entre `cara` e `coroa`.'
+            retry: 'Escolha entre `cara` e `coroa`.\nTente novamente.'
           }
         }
       ]
