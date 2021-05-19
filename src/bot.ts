@@ -17,7 +17,9 @@ export class StevezBot extends AkairoClient {
       // discord.js options
       {
         messageCacheMaxSize: 1000,
-        allowedMentions: {}
+        allowedMentions: {
+          parse: []
+        }
       }
     )
 
