@@ -1,10 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "ES2020",
     "module": "commonjs",
     "outDir": "./out",
 
     "strict": true,
+
+    "baseUrl": "src",
+    "paths": {
+      "@structures/*": ["structures/*"]
+    },
     "esModuleInterop": true,
 
     "skipLibCheck": true,
