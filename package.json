@@ -17,7 +17,7 @@
   "scripts": {
     "build": "babel src --extensions \".js,.ts\" --out-dir out --copy-files",
     "start": "NODE_ENV=production node .",
-    "dev": "ts-node --transpile-only -r tsconfig-paths/register src"
+    "dev": "tsnd --transpile-only -r tsconfig-paths/register src"
   },
   "dependencies": {
     "chalk": "^4.1.1",
@@ -33,7 +33,7 @@
     "babel-plugin-module-resolver": "^4.1.0",
     "cz-conventional-changelog": "^3.3.0",
     "dotenv": "^9.0.2",
-    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.6",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.4"
   },
