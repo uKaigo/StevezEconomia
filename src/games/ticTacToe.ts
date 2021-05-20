@@ -65,7 +65,6 @@ export class TicTacToe {
 
     for (const sequence of winningSequences) {
       const resolved = sequence.map(this.getSquare.bind(this))
-      console.log(resolved)
       if (resolved.includes(Players.UNSET)) {
         continue // Não use o continue!
       }
