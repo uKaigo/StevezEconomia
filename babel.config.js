@@ -9,6 +9,7 @@ module.exports = {
       {
         alias: {
           '@/': './src',
+          '@config': './src/config',
           '@games': './src/games'
         }
       }
