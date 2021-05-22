@@ -13,6 +13,6 @@ export default class ReadyListener extends Listener {
   }
 
   exec () {
-    this.client.logger.info(`Logado como: ${this.client.user!.tag}`)
+    this.client.logger.info(`Logado como: ${this.client.user?.tag}`)
   }
 }
