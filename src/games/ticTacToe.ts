@@ -1,4 +1,4 @@
-enum Players {
+export enum Players {
   X,
   O,
   UNSET
@@ -34,7 +34,7 @@ export class TicTacToe {
     return moves
   }
 
-  private getSquare (move: number) {
+  getSquare (move: number) {
     return this.table[Math.floor(move / 3)][move % 3]
   }
 
