@@ -1,7 +1,7 @@
 import { AkairoClient, CommandHandler, ListenerHandler } from 'discord-akairo'
+import { join } from 'path'
 import { owners, prefix } from './config'
 import { Logger } from './utils/logger'
-import { join } from 'path'
 
 export class StevezBot extends AkairoClient {
   listenerHandler: ListenerHandler
@@ -17,6 +17,7 @@ export class StevezBot extends AkairoClient {
       // discord.js options
       {
         messageCacheMaxSize: 1000,
+        restTimeOffset: 10,
         allowedMentions: {
           parse: []
         }

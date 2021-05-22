@@ -1,5 +1,5 @@
-import { StevezBot } from './bot'
 import { config as config_dotenv } from 'dotenv'
+import { StevezBot } from './bot'
 
 config_dotenv({ debug: process.env.NODE_ENV !== 'production' })
 
