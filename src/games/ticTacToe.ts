@@ -77,6 +77,6 @@ export class TicTacToe {
       }
     }
 
-    return this.validMoves ? null : Players.UNSET
+    return this.validMoves.length ? null : Players.UNSET
   }
 }
