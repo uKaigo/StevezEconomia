@@ -10,7 +10,8 @@
     "paths": {
       "@/*": ["*"],
       "@config": ["config"],
-      "@games/*": ["games/*"]
+      "@games/*": ["games/*"],
+      "@schemas/*": ["schemas/*"]
     },
     "esModuleInterop": true,
 
