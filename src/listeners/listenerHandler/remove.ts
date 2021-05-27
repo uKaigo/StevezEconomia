@@ -2,7 +2,7 @@ import { StevezBot } from '@/bot'
 import { Listener } from 'discord-akairo'
 
 export default class ListenerRemoveListener extends Listener {
-  client!: StevezBot
+  declare client: StevezBot
 
   constructor () {
     super('listenerRemove', {

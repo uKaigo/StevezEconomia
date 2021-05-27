@@ -2,7 +2,7 @@ import { StevezBot } from '@/bot'
 import { Command, Listener } from 'discord-akairo'
 
 export default class CommandLoadListener extends Listener {
-  client!: StevezBot
+  declare client: StevezBot
 
   constructor () {
     super('commandLoad', {
