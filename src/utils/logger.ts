@@ -28,4 +28,8 @@ export class Logger {
   info (...message: string[]) {
     console.info(`${this.getDate()} ${blueBright('[INFO]')} `, ...message)
   }
+
+  error (...message: string[]) {
+    console.error(`${this.getDate()} ${redBright('[ERRO]')} `, ...message)
+  }
 }
