@@ -1,4 +1,4 @@
-import { blueBright, gray, dim } from 'chalk'
+import { blueBright, gray, dim, redBright } from 'chalk'
 
 export class Logger {
   lastDate: string | null
@@ -21,10 +21,11 @@ export class Logger {
     return dim(gray(`[${dateString}]`))
   }
 
-  debug (message: string) {
-    console.debug(`${this.getDate()} ${dim('[DEBUG]')} ${gray(message)}`)
+  debug (...message: string[]) {
+    console.debug(`${this.getDate()} ${dim('[DEBUG]')} ${gray(...message)}`)
   }
-  info (message: string) {
-    console.info(`${this.getDate()} ${blueBright('[INFO]')}  ${message}`)
+
+  info (...message: string[]) {
+    console.info(`${this.getDate()} ${blueBright('[INFO]')} `, ...message)
   }
 }
