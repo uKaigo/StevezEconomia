@@ -8,8 +8,8 @@ interface User {
 
 const userSchema = new Schema<User>({
   _id: { type: String, required: true },
-  balance: { type: String },
-  items: { type: String }
+  balance: { type: Number, default: 0 },
+  items: { type: Number, default: 0 }
 })
 
 export const UserModel = model<User>('User', userSchema)
