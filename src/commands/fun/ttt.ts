@@ -86,7 +86,7 @@ export default class TTTCommand extends Command {
 
     this.updateReactions(info)
     this.loop(info)
-    return this.updateMessage(info)
+    return await this.updateMessage(info)
   }
 
   async updateReactions (info: GameInfo) {

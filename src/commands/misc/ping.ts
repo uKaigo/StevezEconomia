@@ -16,7 +16,7 @@ export default class PingCommand extends Command {
     await this.client.mongoConnection.db.admin().ping()
     const dbPing = Math.round(Date.now() - start)
 
-    return message.channel.send(
+    return await message.channel.send(
       `🏓 Pong!\n- Websocket: ${this.client.ws.ping}ms\n- Database: ${dbPing}ms`
     )
   }
