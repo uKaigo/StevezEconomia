@@ -3,7 +3,7 @@ import { model, Schema } from 'mongoose'
 interface User {
   _id: string
   balance: number
-  items: string[]
+  items: number
 }
 
 const userSchema = new Schema<User>({
