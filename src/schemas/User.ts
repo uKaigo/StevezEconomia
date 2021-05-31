@@ -8,7 +8,7 @@ interface User {
 
 const userSchema = new Schema<User>({
   _id: { type: String, required: true },
-  balance: { type: Number, default: 0 },
+  balance: { type: Number, default: 1000 },
   items: { type: Number, default: 0 }
 })
 
