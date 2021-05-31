@@ -1,3 +1,4 @@
+import { UserModel } from '@schemas/User'
 import { embedColor } from '@config'
 import { Players, TicTacToe } from '@games/ticTacToe'
 import { Command } from 'discord-akairo'
@@ -70,6 +71,31 @@ export default class TTTCommand extends Command {
     if (opponent.id in this.activeGames) {
       return message.channel.send(`${opponent.displayName} já está em um jogo.`)
     }
+
+    let playerDoc = await UserModel.findOne({ _id: message.author.id })
+    if (!playerDoc) {
+      playerDoc = new UserModel({ _id: message.author.id })
+      await playerDoc.save()
+    }
+
+    if (playerDoc.balance < 15) {
+      return await message.channel.send('Você não tem dinheiro suficiente.')
+    }
+
+    let opponentDoc = await UserModel.findOne({ _id: opponent.id })
+    if (!opponentDoc) {
+      opponentDoc = new UserModel({ _id: opponent.id })
+      await opponentDoc.save()
+    }
+
+    if (opponentDoc.balance < 15) {
+      return await message.channel.send(
+        'Seu oponente não tem dinheiro suficiente.'
+      )
+    }
+
+    await playerDoc.updateOne({ $inc: { balance: -15 } })
+    await opponentDoc.updateOne({ $inc: { balance: -15 } })
 
     const gameMessage = await message.channel.send('\u200b')
 
@@ -171,7 +197,15 @@ export default class TTTCommand extends Command {
       this.updateMessage(info)
     }
 
+    if (info.game.winner !== Players.UNSET) {
+      await this.rewardWinner(info.players[info.game.winner!])
+    }
+
     await info.message.reactions.removeAll()
     info.players.forEach(player => delete this.activeGames[player.id])
+  }
+
+  async rewardWinner (player: GuildMember) {
+    await UserModel.updateOne({ _id: player.id }, { $inc: { balance: 30 } })
   }
 }
