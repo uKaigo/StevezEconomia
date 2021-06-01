@@ -94,10 +94,46 @@ export default class TTTCommand extends Command {
       )
     }
 
+    const gameMessage = await message.channel.send(
+      `${opponent}, você deseja jogar jogo da velha com ${message.author}?\n ` +
+        'Será removido **15** coins de cada um, e o ganhador recebe **30**.',
+      {
+        allowedMentions: { parse: ['users'] }
+      }
+    )
+
+    await gameMessage.react('✅')
+    await gameMessage.react('❌')
+
+    let collected
+    try {
+      collected = await gameMessage.awaitReactions(
+        (reaction: MessageReaction, user: User | ClientUser) => {
+          return (
+            reaction.message.id === gameMessage.id &&
+            ['✅', '❌'].includes(reaction.emoji.name) &&
+            user.id == opponent.user.id
+          )
+        },
+        {
+          max: 1,
+          time: 30000,
+          errors: ['time']
+        }
+      )
+    } catch {
+      await gameMessage.edit({ content: 'Tempo excedido.', embed: null })
+      return
+    } finally {
+      await gameMessage.reactions.removeAll()
+    }
+    const reaction = collected.first()
+    if (reaction?.emoji.name === '❌') {
+      return gameMessage.edit({ content: `${opponent} cancelou.` })
+    }
+
     await playerDoc.updateOne({ $inc: { balance: -15 } })
     await opponentDoc.updateOne({ $inc: { balance: -15 } })
-
-    const gameMessage = await message.channel.send('\u200b')
 
     const game = new TicTacToe()
 
@@ -155,7 +191,7 @@ export default class TTTCommand extends Command {
     }
 
     embed.description += `\n${gameStatus}`
-    await info.message.edit(embed)
+    await info.message.edit({ content: null, embed })
   }
 
   getCheck (info: GameInfo) {
