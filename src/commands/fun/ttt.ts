@@ -33,6 +33,7 @@ const GRID = `
 
 export default class TTTCommand extends Command {
   activeGames: { [id: string]: GameInfo }
+  activePrompts: Set<string>
 
   constructor () {
     super('ttt', {
@@ -51,6 +52,7 @@ export default class TTTCommand extends Command {
     })
 
     this.activeGames = {}
+    this.activePrompts = new Set()
   }
 
   getCantPlayText (author: User, opponent: GuildMember) {
@@ -66,7 +68,10 @@ export default class TTTCommand extends Command {
       return 'Você já está em um jogo.'
     }
 
-    if (opponent.id in this.activeGames) {
+    if (
+      opponent.id in this.activeGames ||
+      this.activePrompts.has(opponent.id)
+    ) {
       return `${opponent.displayName} já está em um jogo.`
     }
 
@@ -74,6 +79,8 @@ export default class TTTCommand extends Command {
   }
 
   async promptOpponent (message: Message, opponent: GuildMember) {
+    this.activePrompts.add(opponent.id)
+
     await message.react('✅')
     await message.react('❌')
 
@@ -96,6 +103,8 @@ export default class TTTCommand extends Command {
     } catch {
       await message.edit({ content: 'Tempo excedido.', embed: null })
       return false
+    } finally {
+      this.activePrompts.delete(opponent.id)
     }
 
     const reaction = collected.first()
@@ -114,7 +123,7 @@ export default class TTTCommand extends Command {
     if (cantPlayText) {
       return await message.channel.send(cantPlayText)
     }
-    
+
     let playerDoc = await UserModel.findOne({ _id: message.author.id })
     let opponentDoc = await UserModel.findOne({ _id: opponent.id })
 
