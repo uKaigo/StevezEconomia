@@ -53,39 +53,82 @@ export default class TTTCommand extends Command {
     this.activeGames = {}
   }
 
-  async exec (message: Message, args: TTTArgs) {
-    const opponent = args.opponent
-
+  getCantPlayText (author: User, opponent: GuildMember) {
     if (opponent.user.bot) {
-      return message.channel.send('Você não pode jogar contra um bot.')
+      return 'Você não pode jogar contra um bot.'
     }
 
-    if (opponent.id === message.author.id) {
-      return message.channel.send('Você não pode jogar com você mesmo.')
+    if (opponent.id === author.id) {
+      return 'Você não pode jogar com você mesmo.'
     }
 
-    if (message.author.id in this.activeGames) {
-      return message.channel.send('Você já está em um jogo.')
+    if (author.id in this.activeGames) {
+      return 'Você já está em um jogo.'
     }
 
     if (opponent.id in this.activeGames) {
-      return message.channel.send(`${opponent.displayName} já está em um jogo.`)
+      return `${opponent.displayName} já está em um jogo.`
     }
 
+    return null
+  }
+
+  async promptOpponent (message: Message, opponent: GuildMember) {
+    await message.react('✅')
+    await message.react('❌')
+
+    let collected
+    try {
+      collected = await message.awaitReactions(
+        (reaction: MessageReaction, user: User | ClientUser) => {
+          return (
+            reaction.message.id === message.id &&
+            ['✅', '❌'].includes(reaction.emoji.name) &&
+            user.id == opponent.user.id
+          )
+        },
+        {
+          max: 1,
+          time: 30000,
+          errors: ['time']
+        }
+      )
+    } catch {
+      await message.edit({ content: 'Tempo excedido.', embed: null })
+      return false
+    }
+
+    const reaction = collected.first()
+    if (reaction?.emoji.name === '❌') {
+      await message.edit({ content: `${opponent} cancelou.` })
+      return false
+    }
+
+    return true
+  }
+
+  async exec (message: Message, args: TTTArgs) {
+    const opponent = args.opponent
+
+    const cantPlayText = this.getCantPlayText(message.author, opponent)
+    if (cantPlayText) {
+      return await message.channel.send(cantPlayText)
+    }
+    
     let playerDoc = await UserModel.findOne({ _id: message.author.id })
+    let opponentDoc = await UserModel.findOne({ _id: opponent.id })
+
     if (!playerDoc) {
       playerDoc = new UserModel({ _id: message.author.id })
       await playerDoc.save()
     }
-
-    if (playerDoc.balance < 15) {
-      return await message.channel.send('Você não tem dinheiro suficiente.')
-    }
-
-    let opponentDoc = await UserModel.findOne({ _id: opponent.id })
     if (!opponentDoc) {
       opponentDoc = new UserModel({ _id: opponent.id })
       await opponentDoc.save()
+    }
+
+    if (playerDoc.balance < 15) {
+      return await message.channel.send('Você não tem dinheiro suficiente.')
     }
 
     if (opponentDoc.balance < 15) {
@@ -102,34 +145,9 @@ export default class TTTCommand extends Command {
       }
     )
 
-    await gameMessage.react('✅')
-    await gameMessage.react('❌')
-
-    let collected
-    try {
-      collected = await gameMessage.awaitReactions(
-        (reaction: MessageReaction, user: User | ClientUser) => {
-          return (
-            reaction.message.id === gameMessage.id &&
-            ['✅', '❌'].includes(reaction.emoji.name) &&
-            user.id == opponent.user.id
-          )
-        },
-        {
-          max: 1,
-          time: 30000,
-          errors: ['time']
-        }
-      )
-    } catch {
-      await gameMessage.edit({ content: 'Tempo excedido.', embed: null })
+    const response = await this.promptOpponent(gameMessage, opponent)
+    if (response === false) {
       return
-    } finally {
-      await gameMessage.reactions.removeAll()
-    }
-    const reaction = collected.first()
-    if (reaction?.emoji.name === '❌') {
-      return gameMessage.edit({ content: `${opponent} cancelou.` })
     }
 
     await playerDoc.updateOne({ $inc: { balance: -15 } })
