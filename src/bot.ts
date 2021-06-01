@@ -18,6 +18,7 @@ export class StevezBot extends AkairoClient {
       },
       // discord.js options
       {
+        fetchAllMembers: true,
         messageCacheMaxSize: 1000,
         restTimeOffset: 10,
         allowedMentions: {
