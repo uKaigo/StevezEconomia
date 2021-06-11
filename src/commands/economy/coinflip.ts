@@ -116,11 +116,11 @@ export default class CoinflipCommand extends Command {
       await opponentDoc.save()
     }
 
-    if (playerDoc.balance < 15) {
+    if (playerDoc.balance < 250) {
       return await message.channel.send('Você não tem dinheiro suficiente.')
     }
 
-    if (opponentDoc.balance < 15) {
+    if (opponentDoc.balance < 250) {
       return await message.channel.send(
         'Seu oponente não tem dinheiro suficiente.'
       )
@@ -139,17 +139,22 @@ export default class CoinflipCommand extends Command {
       return
     }
 
-    await playerDoc.updateOne({ $inc: { balance: -15 } })
-    await opponentDoc.updateOne({ $inc: { balance: -15 } })
+    await playerDoc.updateOne({ $inc: { balance: -250 } })
+    await opponentDoc.updateOne({ $inc: { balance: -250 } })
 
     const winner = Math.random() < 0.5 ? 'cara' : 'coroa'
 
+    const toAdd = 500 - 500 * 0.1 // 10% para o bot (50)
     if (args.choice === winner) {
-      await playerDoc.updateOne({ $inc: { balance: 30 } })
-      return await gameMessage.edit('Você ganhou!')
+      await playerDoc.updateOne({ $inc: { balance: toAdd } })
+      return await gameMessage.edit(
+        `${message.author} ganhou! ${toAdd} coins foram adicionados.`
+      )
     } else {
-      await opponentDoc.updateOne({ $inc: { balance: 30 } })
-      return await gameMessage.edit(`${opponent} ganhou!`)
+      await opponentDoc.updateOne({ $inc: { balance: toAdd } })
+      return await gameMessage.edit(
+        `${opponent} ganhou! ${toAdd} coins foram adicionados.`
+      )
     }
   }
 }

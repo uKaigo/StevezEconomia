@@ -159,8 +159,8 @@ export default class TTTCommand extends Command {
       return
     }
 
-    await playerDoc.updateOne({ $inc: { balance: -15 } })
-    await opponentDoc.updateOne({ $inc: { balance: -15 } })
+    await playerDoc.updateOne({ $inc: { balance: -100 } })
+    await opponentDoc.updateOne({ $inc: { balance: -100 } })
 
     const game = new TicTacToe()
 
@@ -269,6 +269,7 @@ export default class TTTCommand extends Command {
   }
 
   async rewardWinner (player: GuildMember) {
-    await UserModel.updateOne({ _id: player.id }, { $inc: { balance: 30 } })
+    const toAdd = 200 - 200 * 0.1 // 10% para o bot (20)
+    await UserModel.updateOne({ _id: player.id }, { $inc: { balance: toAdd } })
   }
 }
