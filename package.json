@@ -16,7 +16,7 @@
   "homepage": "https://github.com/uKaigo/StevezBot#readme",
   "scripts": {
     "build": "babel src --extensions \".js,.ts\" --out-dir out --copy-files",
-    "start": "NODE_ENV=production node .",
+    "start": "node .",
     "dev": "tsnd --transpile-only -r tsconfig-paths/register src"
   },
   "dependencies": {
