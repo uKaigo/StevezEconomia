@@ -1,4 +1,4 @@
-import { UserModel } from '@/schemas/User'
+import { UserModel } from '@schemas/User'
 import { Command } from 'discord-akairo'
 import {
   ClientUser,
