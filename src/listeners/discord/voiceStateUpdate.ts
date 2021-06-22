@@ -67,6 +67,25 @@ export default class VoiceStateUpdateListener extends Listener {
     this.watchers = {}
   }
 
+  registerWatcherEvents (watcher: MemberWatcher) {
+    watcher
+      .on('tick', async id => {
+        await UserModel.updateOne({ _id: id }, { $inc: { balance: 100 } })
+      })
+
+      .on('stop', async id => {
+        await UserModel.updateOne(
+          { _id: id },
+          {
+            voiceXpAccumulator: this.watchers[id].accumulator,
+            lastVoiceXp: getUtcTimestamp()
+          }
+        )
+
+        delete this.watchers[id]
+      })
+  }
+
   async exec (oldState: VoiceState, newState: VoiceState) {
     if (!oldState.member?.id || !newState.member?.id) return // cursed
 
@@ -84,7 +103,6 @@ export default class VoiceStateUpdateListener extends Listener {
         if (getUtcTimestamp() - userData.lastVoiceXp < 86400) {
           watcher.accumulator = userData.voiceXpAccumulator
         }
-
         if (watcher.accumulator === 12) return
       } else {
         await new UserModel({ _id: newState.member.id }).save()
@@ -92,23 +110,8 @@ export default class VoiceStateUpdateListener extends Listener {
 
       this.watchers[newState.member.id] = watcher
 
-      watcher
-        .on('tick', async id => {
-          await UserModel.updateOne({ _id: id }, { $inc: { balance: 100 } })
-        })
-
-        .on('stop', async id => {
-          await UserModel.updateOne(
-            { _id: id },
-            {
-              voiceXpAccumulator: this.watchers[id].accumulator,
-              lastVoiceXp: getUtcTimestamp()
-            }
-          )
-          delete this.watchers[id]
-        })
-
-        .watch()
+      this.registerWatcherEvents(watcher)
+      watcher.watch()
     } else if (!this.watchers[newState.member.id]) {
       return
     } else if (!newState.channelID && oldState.channelID) {
