@@ -1,7 +1,7 @@
 import { Listener } from 'discord-akairo'
 import { VoiceState } from 'discord.js'
-import { promisify } from 'util'
 import { UserModel } from '@schemas/User'
+import { getUtcTimestamp } from '@utils/functions'
 import EventEmitter from 'events'
 
 interface MemberWatcher {
@@ -67,10 +67,8 @@ export default class VoiceStateUpdateListener extends Listener {
     this.watchers = {}
   }
 
-  exec (oldState: VoiceState, newState: VoiceState) {
-    if (!oldState.member?.id || !newState.member?.id) {
-      return // cursed
-    }
+  async exec (oldState: VoiceState, newState: VoiceState) {
+    if (!oldState.member?.id || !newState.member?.id) return // cursed
 
     if (!oldState.channelID && newState.channelID) {
       // Entrou no canal
@@ -80,17 +78,33 @@ export default class VoiceStateUpdateListener extends Listener {
       }
 
       const watcher = new MemberWatcher(newState)
+
+      const userData = await UserModel.findOne({ _id: newState.member.id })
+      if (userData) {
+        if (getUtcTimestamp() - userData.lastVoiceXp < 86400) {
+          watcher.accumulator = userData.voiceXpAccumulator
+        }
+
+        if (watcher.accumulator === 12) return
+      } else {
+        await new UserModel({ _id: newState.member.id }).save()
+      }
+
       this.watchers[newState.member.id] = watcher
 
       watcher
         .on('tick', async id => {
-          await UserModel.findOneAndUpdate(
-            { _id: id },
-            { $inc: { balance: 100 } },
-            { upsert: true, new: true, useFindAndModify: false }
-          )
+          await UserModel.updateOne({ _id: id }, { $inc: { balance: 100 } })
         })
-        .on('stop', id => {
+
+        .on('stop', async id => {
+          await UserModel.updateOne(
+            { _id: id },
+            {
+              voiceXpAccumulator: this.watchers[id].accumulator,
+              lastVoiceXp: getUtcTimestamp()
+            }
+          )
           delete this.watchers[id]
         })
 
