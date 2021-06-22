@@ -36,7 +36,8 @@ class MemberWatcher extends EventEmitter {
   async watch () {
     while (this.accumulator !== 12) {
       try {
-        await this.sleep(3.6e6) // 1 hora
+        // await this.sleep(3.6e6) // 1 hora
+        await this.sleep(5000)
       } catch {
         // Isso só vai executar quando for cancelado.
         break
@@ -70,18 +71,19 @@ export default class VoiceStateUpdateListener extends Listener {
   registerWatcherEvents (watcher: MemberWatcher) {
     watcher
       .on('tick', async id => {
-        await UserModel.updateOne({ _id: id }, { $inc: { balance: 100 } })
-      })
-
-      .on('stop', async id => {
         await UserModel.updateOne(
           { _id: id },
           {
-            voiceXpAccumulator: this.watchers[id].accumulator,
-            lastVoiceXp: getUtcTimestamp()
+            $inc: { balance: 100 },
+            $set: {
+              voiceXpAccumulator: this.watchers[id].accumulator,
+              lastVoiceXp: getUtcTimestamp()
+            }
           }
         )
+      })
 
+      .on('stop', async id => {
         delete this.watchers[id]
       })
   }
