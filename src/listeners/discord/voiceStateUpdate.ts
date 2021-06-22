@@ -26,17 +26,17 @@ class MemberWatcher extends EventEmitter {
     this.rejectPromise()
   }
 
-  sleep () {
+  sleep (time: number) {
     return new Promise((resolve, reject) => {
       this.rejectPromise = reject
-      setTimeout(resolve, 3.6e6) // 1 hora
+      setTimeout(resolve, time)
     })
   }
 
   async watch () {
     while (this.accumulator !== 12) {
       try {
-        await this.sleep()
+        await this.sleep(3.6e6) // 1 hora
       } catch {
         // Isso só vai executar quando for cancelado.
         break
