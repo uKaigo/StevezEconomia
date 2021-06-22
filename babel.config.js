@@ -11,7 +11,8 @@ module.exports = {
           '@/': './src',
           '@config': './src/config',
           '@games': './src/games',
-          '@schemas': './src/schemas'
+          '@schemas': './src/schemas',
+          '@utils': './src/utils'
         }
       }
     ]
