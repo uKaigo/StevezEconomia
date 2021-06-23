@@ -28,7 +28,7 @@ class MemberWatcher extends EventEmitter {
   }
 
   sleep (time: number) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.rejectPromise = reject
       setTimeout(resolve, time)
     })
