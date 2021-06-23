@@ -1,6 +1,7 @@
 import { Listener } from 'discord-akairo'
 import { VoiceState } from 'discord.js'
 import { UserModel } from '@schemas/User'
+import { StevezBot } from '@/bot'
 import { getUtcTimestamp } from '@utils/functions'
 import EventEmitter from 'events'
 
@@ -57,6 +58,7 @@ class MemberWatcher extends EventEmitter {
 }
 
 export default class VoiceStateUpdateListener extends Listener {
+  declare client: StevezBot
   watchers: { [id: string]: MemberWatcher }
 
   constructor () {
@@ -105,6 +107,7 @@ export default class VoiceStateUpdateListener extends Listener {
         if (getUtcTimestamp() - userData.lastVoiceXp < 86400) {
           watcher.accumulator = userData.voiceXpAccumulator
         }
+
         if (watcher.accumulator === 12) return
       } else {
         await new UserModel({ _id: newState.member.id }).save()
@@ -113,7 +116,11 @@ export default class VoiceStateUpdateListener extends Listener {
       this.watchers[newState.member.id] = watcher
 
       this.registerWatcherEvents(watcher)
-      watcher.watch()
+
+      const logger = this.client.logger
+      watcher
+        .watch()
+        .catch(logger.error.bind(logger, `(${newState.member.id} WATCHER)`))
     } else if (!this.watchers[newState.member.id]) {
       return
     } else if (!newState.channelID && oldState.channelID) {
