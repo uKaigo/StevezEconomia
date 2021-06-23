@@ -24,7 +24,7 @@ class MemberWatcher extends EventEmitter {
 
   stop () {
     while (!this.rejectPromise) {}
-    this.rejectPromise()
+    this.rejectPromise('CANCELANDO')
   }
 
   sleep (time: number) {
