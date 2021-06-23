@@ -37,8 +37,7 @@ class MemberWatcher extends EventEmitter {
   async watch () {
     while (this.accumulator !== 12) {
       try {
-        // await this.sleep(3.6e6) // 1 hora
-        await this.sleep(5000)
+        await this.sleep(3.6e6) // 1 hora
       } catch {
         // Isso só vai executar quando for cancelado.
         break
