@@ -11,7 +11,7 @@ const senaSchema = new Schema<SenaInfo>({
   _id: { type: String, default: 'megasena' },
   rewardedNumbers: { type: [Number], required: true },
   startDate: { type: Number, required: true },
-  accumulatedPrize: { type: Number, required: true }
+  accumulatedPrize: { type: Number, default: 100 }
 })
 
 export const SenaModel = model<SenaInfo>('SenaInfo', senaSchema, 'megasena')
