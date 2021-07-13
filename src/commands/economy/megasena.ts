@@ -8,7 +8,7 @@ import {
   MessageReaction,
   User
 } from 'discord.js'
-import { UserModel } from '@/schemas/User'
+import { UserModel } from '@schemas/User'
 
 function convertNumbers (message: Message, argument: string) {
   const numberStrings = argument.split(' ')
