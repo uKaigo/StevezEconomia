@@ -38,8 +38,9 @@ export default class ReadyListener extends Listener {
         megasenaChannel
       ) as TextChannel
 
-      const sDate = new Date(doc.startDate * 1000)
-      const date = [sDate.getDay(), sDate.getMonth(), sDate.getFullYear()]
+      // timezones :(
+      const sDate = new Date((doc.startDate - 3 * 3600) * 1000)
+      const date = [sDate.getDate(), sDate.getMonth() + 1, sDate.getFullYear()]
         .map(d => String(d).padStart(2, '0'))
         .join('/')
 
