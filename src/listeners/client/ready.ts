@@ -61,7 +61,10 @@ export default class ReadyListener extends Listener {
           `Os ganhadores da megasena do dia **${date}** ` +
             `com o valor de **$${prize}** foram:\n\n` +
             winnersFmt +
-            '\n\n> Use `!megasena [valor] [6 numeros]` para apostar para a próxima!'
+            '\n\n> Use `!megasena [valor] [6 numeros]` para apostar para a próxima!',
+          {
+            allowedMentions: { parse: ['users'] }
+          }
         )
       } else {
         await channel.send(
