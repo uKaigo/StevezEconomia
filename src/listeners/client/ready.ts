@@ -2,9 +2,10 @@ import { StevezBot } from '@/bot'
 import { Listener } from 'discord-akairo'
 import { BetModel, SenaModel } from '@schemas/MegaSena'
 import { UserModel } from '@schemas/User'
-import { getUtcTimestamp, randint } from '@utils/functions'
+import { getUtcTimestamp } from '@utils/functions'
 import { megasenaChannel } from '@config'
 import { TextChannel } from 'discord.js'
+import centra from '@aero/centra'
 
 export default class ReadyListener extends Listener {
   declare client: StevezBot
@@ -78,14 +79,15 @@ export default class ReadyListener extends Listener {
       await SenaModel.deleteMany({}) // Deletar tudo
 
       // Gerar 6 números distintos
-      const numbers: number[] = []
+      const rUrl = '?format=plain&num=6&min=1&max=60&col=1&base=10&rnd=new'
+      const res = await centra(`https://www.random.org/integers/${rUrl}`, 'GET')
+        .header('X-Powered-By', 'NodeJS | @aero/centra')
+        .send()
 
-      while (numbers.length !== 6) {
-        const number = randint(1, 61)
-        if (!numbers.includes(number)) {
-          numbers.push(number)
-        }
-      }
+      const numbers: number[] = res.text
+        .trim()
+        .split('\n')
+        .map((n: string) => parseInt(n, 10))
 
       await new SenaModel({
         rewardedNumbers: numbers.sort((a, b) => a - b),

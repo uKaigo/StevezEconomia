@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@aero/centra@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@aero/centra/-/centra-1.0.6.tgz#0151359a4c6a9054d36fa6c31353b2fd3d860e6f"
+  integrity sha512-e7sUh/VjugT8LsHb4/hcbmhaVVi9deWWPQnlMnU0RAnF8+iCdGdCcKvoHnDNl/ELykwjpbKpBYbWPx0yKZaDpw==
+
 "@babel/cli@^7.14.3":
   version "7.14.5"
   resolved "https://registry.yarnpkg.com/@babel/cli/-/cli-7.14.5.tgz#9551b194f02360729de6060785bbdcce52c69f0a"

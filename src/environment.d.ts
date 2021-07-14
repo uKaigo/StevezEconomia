@@ -7,4 +7,6 @@ declare global {
   }
 }
 
+declare module '@aero/centra'
+
 export {}
