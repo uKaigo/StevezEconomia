@@ -73,7 +73,7 @@ export default class ReadyListener extends Listener {
 
       await doc.delete()
 
-      const numbers = Array.from({ length: 6 }, () => randint(1, 61))
+      const numbers = Array.from({ length: 6 }, () => randint(1, 61)).sort()
 
       await new SenaModel({
         rewardedNumbers: numbers,
