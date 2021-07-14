@@ -80,10 +80,12 @@ export default class ReadyListener extends Listener {
         startDate: getUtcTimestamp()
       }).save()
     } else {
-      setTimeout(
-        this.runSena.bind(this),
-        (getUtcTimestamp() - doc.startDate) * 1000
-      )
+      const left = 3 * 86400 - (getUtcTimestamp() - doc.startDate)
+      // O bot provavelmente vai reiniciar em 24 horas, então não é necessário
+      // a espera.
+      if (left < 86400) {
+        setTimeout(this.runSena.bind(this), left * 1000)
+      }
     }
   }
 
