@@ -77,12 +77,18 @@ export default class ReadyListener extends Listener {
 
       await SenaModel.deleteMany({}) // Deletar tudo
 
-      const numbers = Array.from({ length: 6 }, () => randint(1, 61)).sort(
-        (a, b) => a - b
-      )
+      // Gerar 6 números distintos
+      const numbers: number[] = []
+
+      while (numbers.length !== 6) {
+        const number = randint(1, 61)
+        if (!numbers.includes(number)) {
+          numbers.push(number)
+        }
+      }
 
       await new SenaModel({
-        rewardedNumbers: numbers,
+        rewardedNumbers: numbers.sort((a, b) => a - b),
         startDate: getUtcTimestamp()
       }).save()
     } else {
