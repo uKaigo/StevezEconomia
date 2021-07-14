@@ -71,7 +71,7 @@ export default class ReadyListener extends Listener {
         )
       }
 
-      await doc.delete()
+      await SenaModel.deleteMany({}) // Deletar tudo
 
       const numbers = Array.from({ length: 6 }, () => randint(1, 61)).sort()
 
