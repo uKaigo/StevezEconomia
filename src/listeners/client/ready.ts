@@ -73,7 +73,9 @@ export default class ReadyListener extends Listener {
 
       await SenaModel.deleteMany({}) // Deletar tudo
 
-      const numbers = Array.from({ length: 6 }, () => randint(1, 61)).sort()
+      const numbers = Array.from({ length: 6 }, () => randint(1, 61)).sort(
+        (a, b) => a - b
+      )
 
       await new SenaModel({
         rewardedNumbers: numbers,
