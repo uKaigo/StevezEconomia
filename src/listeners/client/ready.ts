@@ -18,7 +18,11 @@ export default class ReadyListener extends Listener {
   }
 
   async runSena () {
-    while (this.client.mongoConnection.readyState !== 1) {}
+    if (this.client.mongoConnection.readyState !== 1) {
+      await new Promise((resolve, reject) =>
+        this.client.mongoConnection.once('connected', resolve)
+      )
+    }
 
     const doc = await SenaModel.findOne({ _id: 'megasena' })
     if (!doc) {
