@@ -65,7 +65,7 @@ export default class ReadyListener extends Listener {
         )
       } else {
         await channel.send(
-          `Infelizmente ninguém ganhou o valor de **$${prize}** da megasena` +
+          `Infelizmente ninguém ganhou o valor de **$${prize}** da megasena ` +
             `do dia **${date}**.\n\n` +
             '> Use `!megasena [valor] [6 numeros]` para apostar para a próxima!'
         )
