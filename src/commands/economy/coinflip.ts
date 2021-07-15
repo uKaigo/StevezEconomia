@@ -139,19 +139,19 @@ export default class CoinflipCommand extends Command {
       return
     }
 
-    await playerDoc.updateOne({ $inc: { balance: -250 } })
-    await opponentDoc.updateOne({ $inc: { balance: -250 } })
+    await playerDoc.updateOne({ $inc: { balance: -250, gamesPlayed: 1 } })
+    await opponentDoc.updateOne({ $inc: { balance: -250, gamesPlayed: 1 } })
 
     const winner = Math.random() < 0.5 ? 'cara' : 'coroa'
 
     const toAdd = 500 - 500 * 0.1 // 10% para o bot (50)
     if (args.choice === winner) {
-      await playerDoc.updateOne({ $inc: { balance: toAdd } })
+      await playerDoc.updateOne({ $inc: { balance: toAdd, gamesWon: 1 } })
       return await gameMessage.edit(
         `${message.author} ganhou! ${toAdd} coins foram adicionados.`
       )
     } else {
-      await opponentDoc.updateOne({ $inc: { balance: toAdd } })
+      await opponentDoc.updateOne({ $inc: { balance: toAdd, gamesWon: 1 } })
       return await gameMessage.edit(
         `${opponent} ganhou! ${toAdd} coins foram adicionados.`
       )
