@@ -8,6 +8,7 @@ interface User {
   lastVoiceXp: number
   gamesPlayed: number
   gamesWon: number
+  settings: number
 }
 
 const userSchema = new Schema<User>({
@@ -17,7 +18,8 @@ const userSchema = new Schema<User>({
   voiceXpAccumulator: { type: Number, default: 0 },
   lastVoiceXp: { type: Number, default: 0 },
   gamesPlayed: { type: Number, default: 0 },
-  gamesWon: { type: Number, default: 0 }
+  gamesWon: { type: Number, default: 0 },
+  settings: { type: Number, default: 0 }
 })
 
 export const UserModel = model<User>('User', userSchema)
