@@ -12,7 +12,7 @@ export default class ProfileCommand extends Command {
 
   constructor () {
     super('profile', {
-      aliases: ['profile'],
+      aliases: ['profile', 'perfil'],
       args: [
         {
           id: 'member',
