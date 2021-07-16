@@ -1,13 +1,8 @@
+import { promptUser } from '@utils/functions'
 import { inRange } from '@utils/converters'
 import { Command } from 'discord-akairo'
 import { BetModel, SenaModel } from '@schemas/MegaSena'
-import {
-  ClientUser,
-  GuildMember,
-  Message,
-  MessageReaction,
-  User
-} from 'discord.js'
+import { Message } from 'discord.js'
 import { UserModel } from '@schemas/User'
 
 function convertNumbers (message: Message, argument: string) {
@@ -63,40 +58,6 @@ export default class MegaSenaCommand extends Command {
     })
   }
 
-  async promptMember (message: Message, member: GuildMember) {
-    await message.react('✅')
-    await message.react('❌')
-
-    let collected
-    try {
-      collected = await message.awaitReactions(
-        (reaction: MessageReaction, user: User | ClientUser) => {
-          return (
-            reaction.message.id === message.id &&
-            ['✅', '❌'].includes(reaction.emoji.name) &&
-            user.id == member.user.id
-          )
-        },
-        {
-          max: 1,
-          time: 30000,
-          errors: ['time']
-        }
-      )
-    } catch {
-      await message.edit({ content: 'Tempo excedido.', embed: null })
-      return false
-    }
-
-    const reaction = collected.first()
-    if (reaction?.emoji.name === '❌') {
-      await message.edit({ content: `Ok, cancelado.`, embed: null })
-      return false
-    }
-
-    return true
-  }
-
   async exec (message: Message, args: MegaSenaArgs) {
     const betDoc = await BetModel.findOne({ _id: message.author.id })
     if (betDoc) {
@@ -125,9 +86,9 @@ export default class MegaSenaCommand extends Command {
       `Você deseja apostar $${args.amount} em \`${numbersRepr}\`?`
     )
 
-    const result = await this.promptMember(msg, message.member!)
+    const result = await promptUser(msg, message.member!)
     if (!result) {
-      return
+      return await msg.edit('Ok. Cancelando.')
     }
 
     await userDoc.updateOne({ $inc: { balance: -args.amount } })

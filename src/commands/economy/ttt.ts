@@ -1,3 +1,4 @@
+import { promptUser } from '@utils/functions'
 import { UserModel } from '@schemas/User'
 import { embedColor } from '@config'
 import { Players, TicTacToe } from '@games/ticTacToe'
@@ -78,44 +79,6 @@ export default class TTTCommand extends Command {
     return null
   }
 
-  async promptOpponent (message: Message, opponent: GuildMember) {
-    this.activePrompts.add(opponent.id)
-
-    await message.react('✅')
-    await message.react('❌')
-
-    let collected
-    try {
-      collected = await message.awaitReactions(
-        (reaction: MessageReaction, user: User | ClientUser) => {
-          return (
-            reaction.message.id === message.id &&
-            ['✅', '❌'].includes(reaction.emoji.name) &&
-            user.id == opponent.user.id
-          )
-        },
-        {
-          max: 1,
-          time: 30000,
-          errors: ['time']
-        }
-      )
-    } catch {
-      await message.edit({ content: 'Tempo excedido.', embed: null })
-      return false
-    } finally {
-      this.activePrompts.delete(opponent.id)
-    }
-
-    const reaction = collected.first()
-    if (reaction?.emoji.name === '❌') {
-      await message.edit({ content: `${opponent} cancelou.` })
-      return false
-    }
-
-    return true
-  }
-
   async exec (message: Message, args: TTTArgs) {
     const opponent = args.opponent
 
@@ -154,9 +117,11 @@ export default class TTTCommand extends Command {
       }
     )
 
-    const response = await this.promptOpponent(gameMessage, opponent)
-    if (response === false) {
-      return
+    this.activePrompts.add(opponent.id)
+    const response = await promptUser(gameMessage, opponent)
+    if (!response) {
+      this.activePrompts.delete(opponent.id)
+      return await gameMessage.edit(`${opponent} cancelou.`)
     }
 
     await playerDoc.updateOne({ $inc: { balance: -100, gamesPlayed: 1 } })
