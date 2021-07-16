@@ -128,7 +128,8 @@ export default class CoinflipCommand extends Command {
 
     const gameMessage = await message.channel.send(
       `${opponent}, você deseja jogar cara ou coroa com ${message.author}?\n ` +
-        'Será removido **15** coins de cada um, e o ganhador recebe **30**.',
+        'Será removido **250** coins de cada um, e o ganhador recebe **500** ' +
+        '(com uma taxa de 10%).',
       {
         allowedMentions: { parse: ['users'] }
       }
