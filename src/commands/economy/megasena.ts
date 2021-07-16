@@ -66,16 +66,14 @@ export default class MegaSenaCommand extends Command {
 
     let userDoc = await UserModel.findOne({ _id: message.author.id })
 
-    if (userDoc) {
-      if (userDoc.balance < args.amount) {
-        return await message.channel.send(`Você não possui $${args.amount}.`)
-      }
-    } else {
-      userDoc = await new UserModel({ _id: message.author.id }).save()
-      // TODO: Remover duplicação de código
-      if (userDoc.balance < args.amount) {
-        return await message.channel.send(`Você não possui $${args.amount}.`)
-      }
+    if (!userDoc) {
+      return await message.channel.send(
+        'Você não tem um perfil. Use `!profile` e tente novamente.'
+      )
+    }
+
+    if (userDoc.balance < args.amount) {
+      return await message.channel.send(`Você não possui $${args.amount}.`)
     }
 
     const numbersRepr = args.numbers

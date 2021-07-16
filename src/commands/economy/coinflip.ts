@@ -61,20 +61,22 @@ export default class CoinflipCommand extends Command {
       return await message.channel.send(cantPlayText)
     }
 
-    let playerDoc = await UserModel.findOne({ _id: message.author.id })
-    let opponentDoc = await UserModel.findOne({ _id: opponent.id })
-
+    const playerDoc = await UserModel.findOne({ _id: message.author.id })
     if (!playerDoc) {
-      playerDoc = new UserModel({ _id: message.author.id })
-      await playerDoc.save()
-    }
-    if (!opponentDoc) {
-      opponentDoc = new UserModel({ _id: opponent.id })
-      await opponentDoc.save()
+      return await message.channel.send(
+        'Você não tem um perfil. Use `!profile` e tente novamente.'
+      )
     }
 
     if (playerDoc.balance < 250) {
       return await message.channel.send('Você não tem dinheiro suficiente.')
+    }
+
+    const opponentDoc = await UserModel.findOne({ _id: opponent.id })
+    if (!opponentDoc) {
+      return await message.channel.send(
+        `${opponent.displayName} não tem um perfil.`
+      )
     }
 
     if (opponentDoc.balance < 250) {
