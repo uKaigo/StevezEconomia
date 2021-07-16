@@ -8,7 +8,7 @@
 
     "baseUrl": "src",
     "paths": {
-      "@/*": ["*"],
+      "@/bot": ["bot"],
       "@config": ["config"],
       "@games/*": ["games/*"],
       "@schemas/*": ["schemas/*"],
