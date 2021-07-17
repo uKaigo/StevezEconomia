@@ -45,6 +45,12 @@ export default class ProfileCommand extends Command {
     let response = await promptUser(message, user)
     settings |= response ? Settings.STATISTICS : 0
 
+    await message.reactions.removeAll()
+
+    await message.edit('Você deseja exibir suas medalhas?')
+    response = await promptUser(message, user)
+    settings |= response ? Settings.MEDALS : 0
+
     await message.delete()
 
     return await new UserModel({ _id: user.id, settings }).save()
