@@ -79,14 +79,15 @@ export default class ReadyListener extends Listener {
       await SenaModel.deleteMany({}) // Deletar tudo
 
       // Gerar 6 números distintos
-      const rUrl = '?format=plain&num=6&min=1&max=60&col=1&base=10&rnd=new'
-      const res = await centra(`https://www.random.org/integers/${rUrl}`, 'GET')
+      const rUrl = 'sequences/?min=1&max=60&col=1&format=plain&rnd=new'
+      const res = await centra(`https://www.random.org/${rUrl}`, 'GET')
         .header('X-Powered-By', 'NodeJS | @aero/centra')
         .send()
 
       const numbers: number[] = res.text
         .trim()
         .split('\n')
+        .slice(0, 6)
         .map((n: string) => parseInt(n, 10))
 
       await new SenaModel({
