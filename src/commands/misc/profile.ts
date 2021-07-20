@@ -83,7 +83,7 @@ export default class ProfileCommand extends Command {
       currencyDisplay: 'narrowSymbol'
     })
 
-    let stats
+    let stats: string
     if (doc.settings & Settings.STATISTICS) {
       const lostGames = doc.gamesPlayed - doc.gamesWon
       const vd = (doc.gamesWon / Math.max(lostGames, 1)).toLocaleString(
@@ -101,6 +101,16 @@ export default class ProfileCommand extends Command {
       stats = 'O usuário preferiu esconder.'
     }
 
+    let medals: string | undefined
+    if (doc.settings & Settings.MEDALS) {
+      const emojis = ['🎖', '🏅', '🥉', '🥈', '🥇']
+      const index = Math.min(Math.floor(doc.gamesWon / 100), emojis.length)
+      medals = emojis
+        .slice(0, index)
+        .reverse()
+        .join(' ')
+    }
+
     const embed = new MessageEmbed()
       .setAuthor(
         `Perfil de ${member.user.tag}:`,
@@ -109,6 +119,10 @@ export default class ProfileCommand extends Command {
       .setColor(member.displayColor)
       .addField('💰 Dinheiro:', money + '\n\u200b', false)
       .addField('📊 Estatísticas:', stats, false)
+
+    if (medals) {
+      embed.setDescription(medals + '\n\u200b')
+    }
 
     await message.channel.send(embed)
   }
