@@ -1,5 +1,5 @@
 import { StevezBot } from '@/bot'
-import { promptUser } from '@utils/functions'
+import { promptUser, formatMoney } from '@utils/functions'
 import { Settings } from '@utils/enums'
 import { Command } from 'discord-akairo'
 import {
@@ -77,12 +77,6 @@ export default class ProfileCommand extends Command {
       }
     }
 
-    const money = doc.balance.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'USD',
-      currencyDisplay: 'narrowSymbol'
-    })
-
     let stats: string
     if (doc.settings & Settings.STATISTICS) {
       const lostGames = doc.gamesPlayed - doc.gamesWon
@@ -117,7 +111,7 @@ export default class ProfileCommand extends Command {
         member.user.avatarURL() || member.user.defaultAvatarURL
       )
       .setColor(member.displayColor)
-      .addField('💰 Dinheiro:', money + '\n\u200b', false)
+      .addField('💰 Dinheiro:', formatMoney(doc.balance) + '\n\u200b', false)
       .addField('📊 Estatísticas:', stats, false)
 
     if (medals) {
