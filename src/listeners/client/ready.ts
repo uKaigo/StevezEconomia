@@ -81,6 +81,7 @@ export default class ReadyListener extends Listener {
       // Gerar 6 números distintos
       const rUrl = 'sequences/?min=1&max=60&col=1&format=plain&rnd=new'
       const res = await centra(`https://www.random.org/${rUrl}`, 'GET')
+        .header('User-Agent', 'Private Discord Bot | kaigo.dev@gmail.com')
         .header('X-Powered-By', 'NodeJS | @aero/centra')
         .send()
 
