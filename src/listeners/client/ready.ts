@@ -39,12 +39,6 @@ export default class ReadyListener extends Listener {
         megasenaChannel
       ) as TextChannel
 
-      // timezones :(
-      const sDate = new Date((doc.startDate - 3 * 3600) * 1000)
-      const date = [sDate.getDate(), sDate.getMonth() + 1, sDate.getFullYear()]
-        .map(d => String(d).padStart(2, '0'))
-        .join('/')
-
       const prize = doc.accumulatedPrize
 
       if (winners.length) {
@@ -60,7 +54,7 @@ export default class ReadyListener extends Listener {
         const winnersFmt = winners.map(w => `- <@${w._id}>`).join('\n')
 
         await channel.send(
-          `Os ganhadores da megasena do dia **${date}** ` +
+          `Os ganhadores da megasena do dia <t:${doc.startDate}:d> ` +
             `com o valor de **$${prize}** foram:\n\n` +
             winnersFmt +
             '\n\n> Use `!megasena [valor] [6 numeros]` para apostar para a próxima!',
@@ -71,7 +65,7 @@ export default class ReadyListener extends Listener {
       } else {
         await channel.send(
           `Infelizmente ninguém ganhou o valor de **$${prize}** da megasena ` +
-            `do dia **${date}**.\n\n` +
+            `do dia <t:${doc.startDate}:d> .\n\n` +
             '> Use `!megasena [valor] [6 numeros]` para apostar para a próxima!'
         )
       }
