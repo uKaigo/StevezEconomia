@@ -1,6 +1,5 @@
 import { promptUser } from '@utils/functions'
-import { inRange } from '@utils/converters'
-import { Command } from 'discord-akairo'
+import { Command, Argument } from 'discord-akairo'
 import { BetModel, SenaModel } from '@schemas/MegaSena'
 import { Message } from 'discord.js'
 import { UserModel } from '@schemas/User'
@@ -38,7 +37,7 @@ export default class MegaSenaCommand extends Command {
       args: [
         {
           id: 'amount',
-          type: inRange(100, Infinity),
+          type: Argument.range('number', 100, Infinity),
           prompt: {
             start: 'Quanto você deseja apostar?',
             retry: 'Aposte no mínimo $100.'
